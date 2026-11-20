@@ -27,8 +27,8 @@ h1{margin:0 0 6px;font-size:17px;font-weight:700;letter-spacing:-0.02em;opacity:
 .nav{display:flex;align-items:center;gap:2px;margin-left:-10px}
 .icon-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;border-radius:10px}
 .icon-btn:hover{background:rgba(255,255,255,.08)}
-.month{font-size:23px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;min-width:128px;text-align:center}
-.today-btn{height:44px;padding:0 18px;border:1px solid rgba(255,255,255,.32);background:transparent;color:#fff;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.month{font-size:21px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap}
+.today-btn{white-space:nowrap;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.32);background:transparent;color:#fff;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
 main{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:14px}
 .tabs{position:relative;display:flex;padding:4px;background:var(--surface2);border-radius:14px}
 .pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--surface);box-shadow:0 1px 3px rgba(8,20,45,.12);transition:transform .3s cubic-bezier(.3,.8,.3,1)}
@@ -91,6 +91,13 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
 .result li{font-size:14px;line-height:1.5;padding-left:10px;text-indent:-10px}
 .result .src{font-size:13px;color:var(--ink2)}
 .pending{font-size:14px;color:var(--ink2);padding:10px 14px;border-radius:12px;border:1px dashed var(--line)}
+.help-btn{width:44px;padding:0;font-size:18px;font-weight:700}
+.guide{display:flex;flex-direction:column;gap:14px;padding:4px 2px 8px}
+.guide section{display:flex;flex-direction:column;gap:6px}
+.guide h4{margin:0;font-size:16px;font-weight:700}
+.guide p,.guide li{margin:0;font-size:15px;line-height:1.55;color:var(--ink)}
+.guide ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.chip{display:inline-block;padding:1px 6px;border-radius:4px;font-size:13px;font-weight:700;vertical-align:1px}
 .cta{height:50px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--sch);color:var(--on-sch);font-size:16px;font-weight:700}
 </style>
 </head>
@@ -104,7 +111,7 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
         <div class="month" id="month"></div>
         <button class="icon-btn" id="next" aria-label="다음 달"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
-      <button class="today-btn" id="today">오늘</button>
+      <div style="display:flex;gap:8px"><button class="today-btn help-btn" id="help" aria-label="캘린더 사용법 보기">?</button><button class="today-btn" id="today">오늘</button></div>
     </div>
   </div>
 </header>
@@ -318,11 +325,20 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
     renderSheet(map);
   }
 
+  var GUIDE = '<div class="guide">' +
+    '<section><h4>탭 보기</h4><ul><li><b>경제학교</b>: 실전반·마스터반 수업 일정</li><li><b>경제지표</b>: 미국 주요 경제지표 발표 일정 (고용·물가·FOMC·GDP)</li><li><b>전체</b>: 수업과 지표를 한 번에</li></ul></section>' +
+    '<section><h4>색깔 구분</h4><ul><li><span class="chip" style="background:var(--sch);color:var(--on-sch)">실전반</span> 실전반 수업 (현장·LIVE·보충)</li><li><span class="chip" style="background:var(--live);color:var(--on-live)">월간 곽수종</span> 마스터반이 함께하는 수업</li><li><span class="chip" style="background:var(--ind);color:var(--on-ind)">CPI</span> 미국 경제지표</li></ul></section>' +
+    '<section><h4>일정 확인</h4><ul><li>날짜를 누르면 시간·대상·진행 방식 등 상세 정보가 열려요.</li><li>신청 링크가 있는 수업은 상세 화면 아래 신청 버튼을 눌러 바로 신청할 수 있어요.</li><li>오른쪽(모바일은 아래) <b>이번 달 일정</b> 목록에서도 눌러서 볼 수 있어요.</li></ul></section>' +
+    '<section><h4>날짜 이동</h4><ul><li>화살표 또는 달력을 좌우로 밀어 달을 넘겨요.</li><li><b>오늘</b> 버튼을 누르면 이번 달로 돌아와요.</li><li>오늘 날짜는 동그라미로, 지난 일정은 흐리게 표시돼요.</li></ul></section>' +
+    '<section><h4>경제지표 보는 법</h4><ul><li>발표 시각은 모두 <b>한국시간</b>이에요. 미국 서머타임도 자동 반영돼요.</li><li>발표 다음 날 아침, 날짜를 누르면 <b>발표 결과 요약</b>이 함께 보여요.</li><li>목록에 <b>결과 요약</b>이라고 뜬 지표는 요약이 올라온 지표예요.</li></ul></section>' +
+    '</div>';
+
   function renderSheet(map) {
     var on = !!S.sheet;
     $("scrim").classList.toggle("on", on);
     $("sheet").classList.toggle("on", on);
     if (!on) return;
+    if (S.sheet === "guide") { $("sheetTitle").textContent = "캘린더 사용법"; $("sheetHol").textContent = ""; $("cards").innerHTML = GUIDE; return; }
     var p = S.sheet.split("-").map(Number);
     $("sheetTitle").textContent = p[1] + "월 " + p[2] + "일 (" + DOW[new Date(p[0], p[1] - 1, p[2]).getDay()] + ")";
     $("sheetHol").textContent = HOLIDAYS[S.sheet] || "";
@@ -356,6 +372,7 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
 
   $("prev").onclick = function () { shift(-1); };
   $("next").onclick = function () { shift(1); };
+  $("help").onclick = function () { S.sheet = "guide"; render(); };
   $("today").onclick = function () { var t = todayKST(); S.y = t.y; S.m = t.m; S.sheet = null; render(); };
   $("tabs").onclick = function (ev) { var b = ev.target.closest("[data-view]"); if (b) { S.view = b.dataset.view; S.sheet = null; render(); } };
   document.addEventListener("click", function (ev) {
