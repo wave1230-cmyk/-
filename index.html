@@ -91,7 +91,10 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
 .result li{font-size:14px;line-height:1.5;padding-left:10px;text-indent:-10px}
 .result .src{font-size:13px;color:var(--ink2)}
 .pending{font-size:14px;color:var(--ink2);padding:10px 14px;border-radius:12px;border:1px dashed var(--line)}
-.help-btn{width:44px;padding:0;font-size:18px;font-weight:700}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.trow h1{margin:0}
+.help-btn{flex:none;min-height:36px;padding:0 12px;border:1px solid rgba(255,255,255,.32);border-radius:10px;background:transparent;color:#fff;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer}
+.help-btn:hover{background:rgba(255,255,255,.08)}
 .guide{display:flex;flex-direction:column;gap:14px;padding:4px 2px 8px}
 .guide section{display:flex;flex-direction:column;gap:6px}
 .guide h4{margin:0;font-size:16px;font-weight:700}
@@ -104,14 +107,14 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
 <body>
 <header>
   <div class="wrap">
-    <h1>곽수종의 경제학교 캘린더</h1>
+    <div class="trow"><h1>곽수종의 경제학교 캘린더</h1><button class="help-btn" id="help">캘린더 사용법</button></div>
     <div class="hrow">
       <div class="nav">
         <button class="icon-btn" id="prev" aria-label="이전 달"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="month" id="month"></div>
         <button class="icon-btn" id="next" aria-label="다음 달"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
-      <div style="display:flex;gap:8px"><button class="today-btn help-btn" id="help" aria-label="캘린더 사용법 보기">?</button><button class="today-btn" id="today">오늘</button></div>
+      <button class="today-btn" id="today">오늘</button>
     </div>
   </div>
 </header>
