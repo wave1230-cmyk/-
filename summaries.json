@@ -8,7 +8,7 @@
       "평균 시간당 임금 전년비 3.0% 상승, 예상(3.2%) 하회",
       "10월 FOMC 동결 확률 약 80% 반영, 12월 0.25%p 인상 확률 66% 수준"
     ],
-    "source": "https://www.foxbusiness.com/economy/us-jobs-report-september-2026"
+    "source": "Fox Business"
   },
   "2026-10-14|CPI": {
     "headline": "9월 CPI 전년비 3.7% - 예상치 3.6% 상회 - 휘발유 급등이 상승 주도",
@@ -19,7 +19,7 @@
       "에너지 전년비 20.4% 급등, 주거비 전월비 0.4%로 오름폭 확대",
       "식료품 물가 전월비 보합"
     ],
-    "source": "https://www.securities.io/u-s-cpi-rises-0-6-in-september-as-gasoline-lifts-annual-rate-to-3-7/"
+    "source": "Securities.io"
   },
   "2026-10-29|FOMC": {
     "headline": "연준 기준금리 3.75~4.00% 동결 - 10대2 결정 - 인상 소수의견 2명",
@@ -30,7 +30,7 @@
       "케빈 워시(Kevin Warsh) 의장, 인플레이션 6년 가까이 목표 상회 언급 - WTI 배럴당 100달러 상회",
       "12월 인상 확률 약 78% 반영, 미 10년물 국채금리 5.03% 마감"
     ],
-    "source": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm"
+    "source": "연방준비제도(Fed)"
   },
   "2026-10-29|GDP": {
     "headline": "3분기 GDP 성장률 3.4% - 예상치 3.2% 상회 - 소비·AI 투자가 성장 견인",
@@ -41,7 +41,7 @@
       "발표 직후 나스닥(Nasdaq) 1% 넘게 하락 등 증시 약세",
       "12월 인상 확률 79.6%로 전일(84.2%) 대비 소폭 하락"
     ],
-    "source": "https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026/"
+    "source": "미 경제분석국(BEA)"
   },
   "2026-10-29|PCE": {
     "headline": "9월 PCE 물가 전년비 3.6% - 예상치 부합 - 8월 대비 오름폭 확대",
@@ -52,7 +52,7 @@
       "상품 물가 전년비 3.9%, 서비스 물가 3.5% 상승",
       "개인 저축률 3.8%로 8월(4.0%) 대비 하락"
     ],
-    "source": "https://www.foxbusiness.com/economy/september-2026-pce-inflation"
+    "source": "Fox Business"
   },
   "2026-11-06|NFP": {
     "headline": "10월 비농업 고용 16.5만 명 - 예상치 6.5만 명 크게 상회 - 실업률 4.1%로 하락",
@@ -63,7 +63,7 @@
       "평균 시간당 임금 전월비 0.4%, 전년비 3.1% 상승으로 예상 상회",
       "전문·사업서비스(7만 명)·헬스케어(4.2만 명)가 고용 증가 주도 - 12월 인상 확률 76.8%로 상승"
     ],
-    "source": "https://www.foxbusiness.com/economy/us-jobs-report-october-2026"
+    "source": "Fox Business"
   },
   "2026-11-10|CPI": {
     "headline": "10월 CPI 전월비 0.4% - 예상치 0.3% 상회 - 근원물가 0.3% 유지",
@@ -74,6 +74,6 @@
       "주거비 0.3%, 식료품 0.5%, 에너지 0.7% 상승",
       "크리스토퍼 월러(Christopher Waller) 연준 이사, 12월 0.5%p 인상 가능성 언급 - 2년물 국채금리 4.69%로 상승"
     ],
-    "source": "https://stockanalysis.com/news/us-cpi-rises-october-2026/"
+    "source": "StockAnalysis"
   }
 }
