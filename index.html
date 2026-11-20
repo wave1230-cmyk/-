@@ -84,6 +84,13 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
 .rows{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:8px;font-size:15px}
 .rows .k{color:var(--ink2)}.rows .v{font-weight:600}
 .desc{font-size:15px;line-height:1.55;padding:12px 14px;border-radius:12px;background:var(--surface2)}
+.result{border-radius:12px;border:1px solid var(--ind);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.result .rt{font-size:13px;font-weight:700;color:var(--ind-ink)}
+.result .rh{font-size:15px;font-weight:700;line-height:1.45}
+.result ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.result li{font-size:14px;line-height:1.5;padding-left:10px;text-indent:-10px}
+.result .src{font-size:13px;color:var(--ink2);text-decoration:underline}
+.pending{font-size:14px;color:var(--ink2);padding:10px 14px;border-radius:12px;border:1px dashed var(--line)}
 .cta{height:50px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--sch);color:var(--on-sch);font-size:16px;font-weight:700}
 </style>
 </head>
@@ -219,6 +226,11 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   function todayKST() { var t = new Date(Date.now() + 9 * 36e5); return { y: t.getUTCFullYear(), m: t.getUTCMonth(), k: key(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()) }; }
 
+  // 발표 결과 요약: 같은 폴더의 summaries.json (키: "날짜|약칭", 예: "2026-12-10|CPI") — 매일 아침 자동 업데이트
+  var SUMMARIES = {};
+  fetch("summaries.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { SUMMARIES = j || {}; render(); }).catch(function () {});
+  function sumOf(e) { return SUMMARIES[e.date + "|" + e.short] || null; }
+
   var t0 = todayKST();
   var S = { y: t0.y, m: t0.m, view: "school", sheet: null };
 
@@ -298,7 +310,7 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
         '<div class="gd"><span class="gn" style="color:' + (it ? "var(--ind-ink)" : dayColor(k2, dw)) + '">' + d + '</span><span class="gw" style="color:' + (it ? "var(--ind-ink)" : HOLIDAYS[k2] || dw === 0 ? "var(--sun)" : dw === 6 ? "var(--sat)" : "var(--ink2)") + '">' + (it ? "오늘 · " : "") + DOW[dw] + (HOLIDAYS[k2] ? " · " + HOLIDAYS[k2] : "") + "</span></div><div>" +
         list.map(function (e) {
           var tn = tone(e), ind = e.category === "indicator";
-          return '<button class="item" data-k="' + k2 + '"><span class="dot" style="background:' + tn.dot + '"></span><span class="it-time">' + e.t.text + (e.endTime ? "~" + e.endTime : "") + '</span><span class="it-title">' + esc(e.title) + '</span><span class="it-tail" style="color:' + (ind ? "var(--ind)" : tn.ink) + '">' + (ind ? "★★★" : esc((e.target || "").replace(" / ", "·"))) + "</span></button>";
+          return '<button class="item" data-k="' + k2 + '"><span class="dot" style="background:' + tn.dot + '"></span><span class="it-time">' + e.t.text + (e.endTime ? "~" + e.endTime : "") + '</span><span class="it-title">' + esc(e.title) + '</span><span class="it-tail" style="color:' + (ind ? "var(--ind)" : tn.ink) + '">' + (ind ? (sumOf(e) ? "결과 요약" : "★★★") : esc((e.target || "").replace(" / ", "·"))) + "</span></button>";
         }).join("") + "</div></div>";
     }
     $("groups").innerHTML = g || '<div class="empty">이 달에 등록된 일정이 없습니다.</div>';
@@ -322,6 +334,11 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
         '<div><div class="ev-title">' + esc(e.title) + '</div><div class="ev-sub">' + esc(e.titleEn) + "</div></div>" +
         '<div class="rows">' + rows.map(function (r) { return '<span class="k">' + r[0] + '</span><span class="v">' + esc(r[1]) + "</span>"; }).join("") + "</div>" +
         '<div class="desc">' + esc(e.description) + "</div>" +
+        (ind ? (function () {
+          var r = sumOf(e);
+          if (r) return '<div class="result"><span class="rt">발표 결과 요약</span><div class="rh">□ ' + esc(r.headline) + "</div><ul>" + (r.bullets || []).map(function (x) { return "<li>- " + esc(x) + "</li>"; }).join("") + "</ul>" + (r.source ? '<a class="src" href="' + esc(r.source) + '" target="_blank" rel="noopener">출처 보기</a>' : "") + "</div>";
+          return e.date < todayKST().k ? '<div class="pending">발표 결과 요약을 준비 중이에요.</div>' : '<div class="pending">발표 후 다음 날 아침에 결과 요약이 올라와요.</div>';
+        })() : "") +
         (!ind && e.link ? '<a class="cta" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + esc(e.linkLabel || "바로 신청하러 가기") + "</a>" : "") +
         "</article>";
     }).join("");
