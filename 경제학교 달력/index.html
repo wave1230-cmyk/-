@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>곽수종의 경제학교 캘린더</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--bg:#F3F5F9;--surface:#FFFFFF;--surface2:#EDF0F5;--ink:#0E1A33;--ink2:#55607A;--line:#E0E5EE;--navy:#0F1F3D;--today-bg:#0F1F3D;--today-ink:#FFFFFF;
+--ind:#0F8572;--ind-ink:#0A6B5B;--ind-tint:#DCF2ED;--on-ind:#FFFFFF;
+--sch:#1E3A8A;--sch-ink:#1E3A8A;--sch-tint:#E3E9F8;--on-sch:#FFFFFF;
+--live:#C9971C;--live-ink:#7A5600;--live-tint:#FBF1D6;--on-live:#2A1C00;
+--sun:#D2403A;--sat:#2B62D6;--star-off:#D6DBE4;--scrim:rgba(8,14,30,.45)}
+@media (prefers-color-scheme: dark){:root{--bg:#0A1224;--surface:#111C33;--surface2:#1A2743;--ink:#E8EDF6;--ink2:#9DA9BF;--line:#24324F;--navy:#08112A;--today-bg:#E8EDF6;--today-ink:#0A1224;
+--ind:#3CC5AC;--ind-ink:#83DDCB;--ind-tint:rgba(60,197,172,.16);--on-ind:#04231D;
+--sch:#7E9BFF;--sch-ink:#AFC2FF;--sch-tint:rgba(126,155,255,.18);--on-sch:#0A1433;
+--live:#E2B84A;--live-ink:#F0D38A;--live-tint:rgba(226,184,74,.16);--on-live:#241800;
+--sun:#FF7D73;--sat:#86A9FF;--star-off:#2E3D5C;--scrim:rgba(0,0,0,.6)}}
+*{box-sizing:border-box}
+body{margin:0;-webkit-text-size-adjust:100%;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',system-ui,sans-serif;letter-spacing:-0.01em;overflow-x:hidden}
+button{-webkit-tap-highlight-color:transparent;font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+header{background:var(--navy);color:#fff;padding:14px 16px 10px;padding-top:calc(14px + env(safe-area-inset-top))}
+.wrap{max-width:1100px;margin:0 auto}
+h1{margin:0 0 6px;font-size:17px;font-weight:700;letter-spacing:-0.02em;opacity:.92}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav{display:flex;align-items:center;gap:2px;margin-left:-10px}
+.icon-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff;cursor:pointer;border-radius:10px}
+.icon-btn:hover{background:rgba(255,255,255,.08)}
+.month{font-size:23px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;min-width:128px;text-align:center}
+.today-btn{height:44px;padding:0 18px;border:1px solid rgba(255,255,255,.32);background:transparent;color:#fff;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+main{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.tabs{position:relative;display:flex;padding:4px;background:var(--surface2);border-radius:14px}
+.pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:10px;background:var(--surface);box-shadow:0 1px 3px rgba(8,20,45,.12);transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+.tab{position:relative;z-index:1;flex:1;min-width:0;height:46px;display:flex;align-items:center;justify-content:center;gap:6px;border:none;background:transparent;font-size:15px;cursor:pointer;transition:color .25s;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.legend{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;min-height:44px;font-size:14px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;min-width:0}
+.cal{padding:10px 5px 8px;touch-action:pan-y}
+.wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.wd{text-align:center;font-size:14px;font-weight:600;height:28px;line-height:28px}
+.weeks{display:flex;flex-direction:column;gap:2px;padding-top:6px;transition:opacity .22s,transform .22s}
+.weeks .wk{gap:1px}
+.day{min-width:0;min-height:72px;padding:5px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;border-radius:10px;background:transparent;transition:background .2s}
+.day.has{cursor:pointer}
+.day.has:hover,.day.sel{background:var(--surface2)}
+.day.out{opacity:.3}
+.num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.lbl{max-width:100%;padding:1px 3px;border-radius:4px;font-size:11px;line-height:14px;font-weight:700;letter-spacing:-0.05em;word-break:keep-all;text-align:center;overflow:hidden}
+.more{font-size:13px;line-height:16px;font-weight:600;color:var(--ink2)}
+.foot{padding:10px 10px 4px;font-size:14px;color:var(--ink2);line-height:1.5}
+.list{padding:16px 14px 6px}
+.lh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:0 4px 10px}
+h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-0.02em}
+.cnt{font-size:14px;color:var(--ink2)}
+.empty{padding:36px 8px 40px;text-align:center;font-size:15px;color:var(--ink2);border-top:1px solid var(--line)}
+.grp{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;padding:10px 4px;border-top:1px solid var(--line);border-radius:10px}
+.gd{display:flex;flex-direction:column;align-items:flex-start;padding-top:6px}
+.gn{font-size:21px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.gw{font-size:14px;font-weight:500;white-space:nowrap}
+.item{display:flex;align-items:center;gap:10px;min-height:44px;width:100%;padding:4px 6px;margin:0 -6px;box-sizing:content-box;border:none;border-radius:8px;background:transparent;text-align:left;cursor:pointer}
+.item:hover{background:var(--surface2)}
+.it-time{flex:none;font-size:14px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
+.it-title{flex:1;min-width:0;font-size:15px;font-weight:600;line-height:1.35}
+.it-tail{flex:none;font-size:14px;font-weight:600}
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:50;opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:560px;max-height:84vh;overflow-y:auto;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;z-index:51;padding:8px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(calc(100% + 30px));transition:transform .34s cubic-bezier(.2,.85,.25,1);box-shadow:0 -8px 30px rgba(8,20,45,.18)}
+.sheet.on{transform:translateY(0)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:2px auto 6px}
+.sh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 0 8px}
+h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
+.hol{font-size:14px;font-weight:600;color:var(--sun);margin-left:8px}
+.close{width:44px;height:44px;margin-right:-8px;display:flex;align-items:center;justify-content:center;border:none;border-radius:50%;background:transparent;color:var(--ink2);cursor:pointer}
+.cards{display:flex;flex-direction:column;gap:12px}
+.ev{border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ev-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.badge{font-size:14px;font-weight:700;padding:3px 8px;border-radius:6px}
+.ev-title{font-size:19px;font-weight:700;line-height:1.35;letter-spacing:-0.02em}
+.ev-sub{font-size:14px;color:var(--ink2);margin-top:2px}
+.rows{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:8px;font-size:15px}
+.rows .k{color:var(--ink2)}.rows .v{font-weight:600}
+.desc{font-size:15px;line-height:1.55;padding:12px 14px;border-radius:12px;background:var(--surface2)}
+.cta{height:50px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--sch);color:var(--on-sch);font-size:16px;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>곽수종의 경제학교 캘린더</h1>
+    <div class="hrow">
+      <div class="nav">
+        <button class="icon-btn" id="prev" aria-label="이전 달"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5L7 10l5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="month" id="month"></div>
+        <button class="icon-btn" id="next" aria-label="다음 달"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <button class="today-btn" id="today">오늘</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="tabs" role="tablist"><div class="pill" id="pill"></div><div id="tabs" style="display:contents"></div></div>
+  <div class="legend" id="legend"></div>
+  <div class="grid2">
+    <section class="card cal" id="cal">
+      <div class="wk" id="wdays"></div>
+      <div class="weeks" id="weeks"></div>
+      <div class="foot" id="foot"></div>
+    </section>
+    <section class="card list">
+      <div class="lh"><h2>이번 달 일정</h2><span class="cnt" id="cnt"></span></div>
+      <div id="groups"></div>
+    </section>
+  </div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grab"></div>
+  <div class="sh">
+    <div><h3 id="sheetTitle" style="display:inline"></h3><span class="hol" id="sheetHol"></span></div>
+    <button class="close" id="close" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<script>
+// ═══ 일정 데이터: 매달 이 배열만 수정하세요 ═══════════════════════════════
+// 시간은 한국시간(KST). 경제지표 시각은 미국 서머타임 기준으로 입력 → 서머타임이 아닌 날짜는 자동 +1시간
+// 경제학교 색상: target에 "마스터반"이 있으면 골드, 실전반만이면 남색
+// 신청 링크: link에 주소, linkLabel에 버튼 문구 (비워두면 버튼 없음)
+var EVENTS = [
+  { date: "2026-10-02", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2026-10-14", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2026-10-29", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "10/27~28(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2026-10-29", time: "21:30", title: "GDP 속보치 (3분기)", titleEn: "GDP Advance Estimate (Q3)", short: "GDP", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "3분기 성장률 첫 발표. 경기 방향성 확인." },
+  { date: "2026-10-30", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2026-11-06", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2026-11-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2026-11-25", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2026-12-04", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2026-12-10", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "12/8~9(미 현지) 회의 결과. 성명서·점도표 발표 후 의장 기자회견." },
+  { date: "2026-12-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2026-12-23", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-01-08", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-01-13", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-01-28", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "1/26~27(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-01-28", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-01-28", time: "21:30", title: "GDP 속보치 (4분기)", titleEn: "GDP Advance Estimate (Q4)", short: "GDP", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "4분기 성장률 첫 발표. 경기 방향성 확인." },
+  { date: "2027-02-05", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-02-11", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-02-25", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-03-05", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-03-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-03-18", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "3/16~17(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-03-31", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-04-02", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-04-13", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-04-29", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "4/27~28(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-04-29", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-04-29", time: "21:30", title: "GDP 속보치 (1분기)", titleEn: "GDP Advance Estimate (Q1)", short: "GDP", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "1분기 성장률 첫 발표. 경기 방향성 확인." },
+  { date: "2027-05-07", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-05-12", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-05-27", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-06-04", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-06-10", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "6/8~9(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-06-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-06-25", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-07-02", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-07-14", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-07-29", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "7/27~28(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-07-29", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-07-29", time: "21:30", title: "GDP 속보치 (2분기)", titleEn: "GDP Advance Estimate (Q2)", short: "GDP", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "2분기 성장률 첫 발표. 경기 방향성 확인." },
+  { date: "2027-08-06", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-08-11", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-08-25", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-09-03", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-09-14", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-09-16", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "9/14~15(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-09-30", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-10-08", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-10-14", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-10-28", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-10-28", time: "21:30", title: "GDP 속보치 (3분기)", titleEn: "GDP Advance Estimate (Q3)", short: "GDP", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "3분기 성장률 첫 발표. 경기 방향성 확인." },
+  { date: "2027-11-05", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-11-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-11-18", time: "03:00", title: "FOMC 금리 결정", titleEn: "FOMC Rate Decision", short: "FOMC", category: "indicator", importance: 3, agency: "연방준비제도 (Fed)", description: "11/16~17(미 현지) 회의 결과. 성명서 발표 후 의장 기자회견." },
+  { date: "2027-11-24", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+  { date: "2027-12-03", time: "21:30", title: "고용보고서 (비농업 고용)", titleEn: "Nonfarm Payrolls", short: "NFP", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "고용·임금 흐름 확인. 연준 정책 판단의 핵심 근거." },
+  { date: "2027-12-10", time: "21:30", title: "소비자물가지수", titleEn: "Consumer Price Index (CPI)", short: "CPI", category: "indicator", importance: 3, agency: "미 노동통계국 (BLS)", description: "물가 흐름 확인. 금리 전망에 직접 영향." },
+  { date: "2027-12-22", time: "21:30", title: "개인소비지출 물가지수", titleEn: "PCE Price Index", short: "PCE", category: "indicator", importance: 3, agency: "미 경제분석국 (BEA)", description: "연준이 가장 중시하는 물가 지표." },
+
+  { date: "2026-10-15", time: "19:00", endTime: "22:00", title: "10월 오프라인 스터디 수업", titleEn: "실전반", short: "실전반 현장", category: "school", target: "실전반", mode: "현장 강의 (오프라인)", description: "실전반 대상 현장 강의 수업." },
+  { date: "2026-10-19", time: "19:00", endTime: "20:30", title: "실전반 온라인 라이브 수업 (19회차)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의", description: "실전반 19회차 온라인 실시간 강의." },
+  { date: "2026-10-22", time: "19:00", endTime: "22:00", title: "월간 곽수종 온/오프라인 수업", titleEn: "마스터반 · 실전반", short: "월간 곽수종", category: "school", target: "마스터반 / 실전반", mode: "현장 강의 + 온라인 실시간 강의 동시 진행", description: "현장 강의와 온라인 실시간 강의를 동시에 진행합니다." },
+  { date: "2026-11-02", time: "19:00", endTime: "22:00", title: "실전반 온라인 라이브 수업 (20회차)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의", description: "실전반 20회차 온라인 실시간 강의." },
+  { date: "2026-11-09", time: "19:00", endTime: "22:00", title: "실전반 온라인 라이브 수업 (보충)", titleEn: "실전반", short: "실전반 보충", category: "school", target: "실전반", mode: "온라인 실시간 강의", description: "실전반 보충 온라인 실시간 강의." },
+  { date: "2026-11-12", time: "19:00", endTime: "22:00", title: "11월 실전반 오프라인 스터디", titleEn: "실전반", short: "실전반 현장", category: "school", target: "실전반", mode: "현장 강의", description: "실전반 대상 현장 강의 수업." },
+  { date: "2026-11-16", time: "19:00", endTime: "20:30", title: "실전반 온라인 라이브 수업 (21회차)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의", description: "실전반 21회차 온라인 실시간 강의." },
+  { date: "2026-11-27", time: "19:00", endTime: "22:00", title: "월간 곽수종 온/오프라인 수업", titleEn: "마스터반 · 실전반", short: "월간 곽수종", category: "school", target: "마스터반 / 실전반", mode: "현장 강의 + 온라인 실시간 강의 동시 진행", description: "현장 강의와 온라인 실시간 강의를 동시에 진행합니다.", link: "https://campaign.us-insight.com/96a4fb58-201a-49de-b118-c9fc0e14b260/", linkLabel: "11월 월간 곽수종 바로 신청하러 가기" },
+  { date: "2026-11-30", time: "19:00", endTime: "22:00", title: "실전반 온라인 라이브 수업 (22회차)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의", description: "실전반 22회차 온라인 실시간 강의." },
+  { date: "2026-12-10", time: "19:00", endTime: "22:00", title: "12월 실전반 오프라인 스터디", titleEn: "실전반", short: "실전반 현장", category: "school", target: "실전반", mode: "현장 강의", description: "실전반 대상 현장 강의 수업." },
+  { date: "2026-12-14", time: "19:00", endTime: "22:00", title: "실전반 온라인 라이브 수업 (줌)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의 (Zoom)", description: "실전반 온라인 실시간 강의." },
+  { date: "2026-12-18", time: "19:00", endTime: "22:00", title: "월간 곽수종 온/오프라인 수업", titleEn: "마스터반 · 실전반", short: "월간 곽수종", category: "school", target: "마스터반 / 실전반", mode: "현장 강의 + 온라인 실시간 강의 동시 진행", description: "현장 강의와 온라인 실시간 강의를 동시에 진행합니다." },
+  { date: "2026-12-21", time: "19:00", endTime: "22:00", title: "실전반 온라인 라이브 수업 (줌)", titleEn: "실전반", short: "실전반 LIVE", category: "school", target: "실전반", mode: "온라인 실시간 강의 (Zoom)", description: "실전반 온라인 실시간 강의." }
+];
+var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "2026-10-09": "한글날", "2026-12-25": "성탄절" };
+// ═══════════════════════════════════════════════════════════════════════
+
+(function () {
+  var DOW = ["일", "월", "화", "수", "목", "금", "토"];
+  var $ = function (id) { return document.getElementById(id); };
+  var pad = function (n) { return String(n).padStart(2, "0"); };
+  var key = function (y, m, d) { return y + "-" + pad(m + 1) + "-" + pad(d); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  function todayKST() { var t = new Date(Date.now() + 9 * 36e5); return { y: t.getUTCFullYear(), m: t.getUTCMonth(), k: key(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()) }; }
+
+  var t0 = todayKST();
+  var S = { y: t0.y, m: t0.m, view: "school", sheet: null };
+
+  function usDST(ds) {
+    var p = ds.split("-").map(Number), y = p[0];
+    var nthSun = function (mm, n) { var f = new Date(y, mm, 1).getDay(); return 1 + ((7 - f) % 7) + 7 * (n - 1); };
+    var v = p[1] * 100 + p[2];
+    return v >= 300 + nthSun(2, 2) && v < 1100 + nthSun(10, 1);
+  }
+  function fmtTime(e) {
+    var hm = e.time.split(":").map(Number), h = hm[0], mi = hm[1], next = false;
+    if (e.category === "indicator" && !usDST(e.date)) { h += 1; if (h >= 24) { h -= 24; next = true; } }
+    return { text: (next ? "익일 " : "") + pad(h) + ":" + pad(mi), sort: h * 60 + mi + (next ? 1440 : 0) };
+  }
+  function tone(e) {
+    if (e.category === "indicator") return { dot: "var(--ind)", tint: "var(--ind-tint)", ink: "var(--ind-ink)", solid: "var(--ind)", on: "var(--on-ind)" };
+    if ((e.target || "").indexOf("마스터반") >= 0) return { dot: "var(--live)", tint: "var(--live-tint)", ink: "var(--live-ink)", solid: "var(--live)", on: "var(--on-live)" };
+    return { dot: "var(--sch)", tint: "var(--sch-tint)", ink: "var(--sch-ink)", solid: "var(--sch)", on: "var(--on-sch)" };
+  }
+  function dayColor(k, dow) { return HOLIDAYS[k] || dow === 0 ? "var(--sun)" : dow === 6 ? "var(--sat)" : "var(--ink)"; }
+
+  var SEG = [["school", "경제학교", "linear-gradient(90deg,var(--sch) 50%,var(--live) 50%)"], ["indicator", "경제지표", "var(--ind)"], ["all", "전체", "linear-gradient(90deg,var(--ind) 34%,var(--sch) 34% 67%,var(--live) 67%)"]];
+
+  $("wdays").innerHTML = DOW.map(function (l, i) { return '<div class="wd" style="color:' + (i === 0 ? "var(--sun)" : i === 6 ? "var(--sat)" : "var(--ink2)") + '">' + l + "</div>"; }).join("");
+
+  function byDate() {
+    var map = {};
+    EVENTS.forEach(function (e) {
+      if (S.view !== "all" && e.category !== S.view) return;
+      (map[e.date] = map[e.date] || []).push(Object.assign({}, e, { t: fmtTime(e) }));
+    });
+    Object.keys(map).forEach(function (k) { map[k].sort(function (a, b) { return a.t.sort - b.t.sort; }); });
+    return map;
+  }
+
+  function render() {
+    var y = S.y, m = S.m, today = todayKST(), map = byDate();
+    $("month").textContent = y + "년 " + (m + 1) + "월";
+
+    var idx = SEG.findIndex(function (s) { return s[0] === S.view; });
+    $("pill").style.transform = "translateX(" + idx * 100 + "%)";
+    $("tabs").innerHTML = SEG.map(function (s, i) {
+      return '<button class="tab" role="tab" aria-selected="' + (i === idx) + '" data-view="' + s[0] + '" style="color:' + (i === idx ? "var(--ink)" : "var(--ink2)") + ";font-weight:" + (i === idx ? 700 : 500) + '"><span class="dot" style="background:' + s[2] + '"></span>' + s[1] + "</button>";
+    }).join("");
+
+    var lg = (S.view === "all" || S.view === "indicator" ? [["미국 경제지표", "var(--ind)"]] : []).concat(S.view === "indicator" ? [] : [["실전반", "var(--sch)"], ["마스터반 · 월간 곽수종", "var(--live)"]]);
+    $("legend").innerHTML = lg.map(function (l) { return '<span><i style="background:' + l[1] + '"></i>' + l[0] + "</span>"; }).join("");
+
+    var first = new Date(y, m, 1).getDay(), dim = new Date(y, m + 1, 0).getDate(), prevDim = new Date(y, m, 0).getDate();
+    var total = Math.ceil((first + dim) / 7) * 7, html = "";
+    for (var i = 0; i < total; i++) {
+      var dn = i - first + 1, dow = i % 7;
+      if (dow === 0) html += '<div class="wk">';
+      if (dn < 1 || dn > dim) {
+        html += '<button class="day out" disabled aria-hidden="true"><span class="num" style="color:var(--ink2);font-weight:500">' + (dn < 1 ? prevDim + dn : dn - dim) + "</span></button>";
+      } else {
+        var k = key(y, m, dn), evs = map[k] || [], isT = k === today.k;
+        var top = evs.slice().sort(function (a, b) { return (b.importance || 3) - (a.importance || 3) || a.t.sort - b.t.sort; })[0];
+        var tn = top ? tone(top) : null;
+        html += '<button class="day' + (evs.length ? " has" : "") + (S.sheet === k ? " sel" : "") + '" data-k="' + k + '" aria-label="' + (m + 1) + "월 " + dn + "일" + (isT ? " 오늘" : "") + ", 일정 " + evs.length + '건">' +
+          '<span class="num" style="background:' + (isT ? "var(--today-bg)" : "transparent") + ";color:" + (isT ? "var(--today-ink)" : dayColor(k, dow)) + ";font-weight:" + (isT ? 700 : 600) + '">' + dn + "</span>" +
+          (top ? '<span class="lbl" style="background:' + tn.solid + ";color:" + tn.on + '">' + esc(top.short) + "</span>" : "") +
+          (evs.length > 1 ? '<span class="more">+' + (evs.length - 1) + "</span>" : "") + "</button>";
+      }
+      if (dow === 6) html += "</div>";
+    }
+    $("weeks").innerHTML = html;
+    $("foot").textContent = S.view === "school" ? "날짜를 누르면 상세 정보가 열립니다. 좌우로 밀어 달을 이동하세요." : "경제지표 발표 시각은 한국시간(KST) 기준이며, 미국 서머타임 여부를 날짜별로 자동 반영합니다.";
+
+    var g = "", count = 0;
+    for (var d = 1; d <= dim; d++) {
+      var k2 = key(y, m, d), list = map[k2];
+      if (!list) continue;
+      count += list.length;
+      var dw = new Date(y, m, d).getDay(), it = k2 === today.k;
+      g += '<div class="grp" style="opacity:' + (k2 < today.k ? 0.45 : 1) + ";background:" + (it ? "var(--surface2)" : "transparent") + '">' +
+        '<div class="gd"><span class="gn" style="color:' + (it ? "var(--ind-ink)" : dayColor(k2, dw)) + '">' + d + '</span><span class="gw" style="color:' + (it ? "var(--ind-ink)" : HOLIDAYS[k2] || dw === 0 ? "var(--sun)" : dw === 6 ? "var(--sat)" : "var(--ink2)") + '">' + (it ? "오늘 · " : "") + DOW[dw] + (HOLIDAYS[k2] ? " · " + HOLIDAYS[k2] : "") + "</span></div><div>" +
+        list.map(function (e) {
+          var tn = tone(e), ind = e.category === "indicator";
+          return '<button class="item" data-k="' + k2 + '"><span class="dot" style="background:' + tn.dot + '"></span><span class="it-time">' + e.t.text + (e.endTime ? "~" + e.endTime : "") + '</span><span class="it-title">' + esc(e.title) + '</span><span class="it-tail" style="color:' + (ind ? "var(--ind)" : tn.ink) + '">' + (ind ? "★★★" : esc((e.target || "").replace(" / ", "·"))) + "</span></button>";
+        }).join("") + "</div></div>";
+    }
+    $("groups").innerHTML = g || '<div class="empty">이 달에 등록된 일정이 없습니다.</div>';
+    $("cnt").textContent = count + "건";
+    renderSheet(map);
+  }
+
+  function renderSheet(map) {
+    var on = !!S.sheet;
+    $("scrim").classList.toggle("on", on);
+    $("sheet").classList.toggle("on", on);
+    if (!on) return;
+    var p = S.sheet.split("-").map(Number);
+    $("sheetTitle").textContent = p[1] + "월 " + p[2] + "일 (" + DOW[new Date(p[0], p[1] - 1, p[2]).getDay()] + ")";
+    $("sheetHol").textContent = HOLIDAYS[S.sheet] || "";
+    $("cards").innerHTML = (map[S.sheet] || []).map(function (e) {
+      var tn = tone(e), ind = e.category === "indicator";
+      var rows = ind ? [["발표 시각", e.t.text + " KST"], ["발표 기관", e.agency]] : [["시간", e.t.text + (e.endTime ? " ~ " + e.endTime : "")], ["대상", e.target], ["진행 방식", e.mode]].concat(e.place ? [["장소", e.place]] : []);
+      return '<article class="ev"><div class="ev-top"><span class="badge" style="background:' + (ind ? tn.tint : tn.solid) + ";color:" + (ind ? tn.ink : tn.on) + '">' + esc(ind ? "미국 경제지표" : e.target) + "</span>" +
+        (ind ? '<span style="font-size:14px;color:var(--ink2)">중요도 <span style="color:var(--ind);letter-spacing:-1px">★★★</span></span>' : "") + "</div>" +
+        '<div><div class="ev-title">' + esc(e.title) + '</div><div class="ev-sub">' + esc(e.titleEn) + "</div></div>" +
+        '<div class="rows">' + rows.map(function (r) { return '<span class="k">' + r[0] + '</span><span class="v">' + esc(r[1]) + "</span>"; }).join("") + "</div>" +
+        '<div class="desc">' + esc(e.description) + "</div>" +
+        (!ind && e.link ? '<a class="cta" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + esc(e.linkLabel || "바로 신청하러 가기") + "</a>" : "") +
+        "</article>";
+    }).join("");
+  }
+
+  var animT;
+  function shift(n) {
+    clearTimeout(animT);
+    var w = $("weeks"); w.style.opacity = 0; w.style.transform = "translateX(" + (n > 0 ? -16 : 16) + "px)";
+    animT = setTimeout(function () {
+      S.m += n; if (S.m < 0) { S.m = 11; S.y--; } if (S.m > 11) { S.m = 0; S.y++; }
+      S.sheet = null; render(); w.style.opacity = 1; w.style.transform = "none";
+    }, 140);
+  }
+
+  $("prev").onclick = function () { shift(-1); };
+  $("next").onclick = function () { shift(1); };
+  $("today").onclick = function () { var t = todayKST(); S.y = t.y; S.m = t.m; S.sheet = null; render(); };
+  $("tabs").onclick = function (ev) { var b = ev.target.closest("[data-view]"); if (b) { S.view = b.dataset.view; S.sheet = null; render(); } };
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".day.has, .item");
+    if (b) { S.sheet = b.dataset.k; render(); }
+  });
+  $("scrim").onclick = $("close").onclick = function () { S.sheet = null; render(); };
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && S.sheet) { S.sheet = null; render(); } });
+
+  var tx = null, ty = null, cal = $("cal");
+  cal.addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  cal.addEventListener("touchend", function (e) {
+    if (tx == null) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) shift(dx < 0 ? 1 : -1);
+  });
+
+  // 1분마다 날짜 확인 → 자정이 지나면 '오늘' 표시 자동 이동
+  var lastK = todayKST().k;
+  setInterval(function () { var k = todayKST().k; if (k !== lastK) { lastK = k; render(); } }, 60000);
+
+  render();
+})();
+</script>
+</body>
+</html>
