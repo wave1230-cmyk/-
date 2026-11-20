@@ -89,7 +89,7 @@ h3{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
 .result .rh{font-size:15px;font-weight:700;line-height:1.45}
 .result ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
 .result li{font-size:14px;line-height:1.5;padding-left:10px;text-indent:-10px}
-.result .src{font-size:13px;color:var(--ink2);text-decoration:underline}
+.result .src{font-size:13px;color:var(--ink2)}
 .pending{font-size:14px;color:var(--ink2);padding:10px 14px;border-radius:12px;border:1px dashed var(--line)}
 .cta{height:50px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--sch);color:var(--on-sch);font-size:16px;font-weight:700}
 </style>
@@ -336,7 +336,7 @@ var HOLIDAYS = { "2026-10-03": "개천절", "2026-10-05": "대체공휴일", "20
         '<div class="desc">' + esc(e.description) + "</div>" +
         (ind ? (function () {
           var r = sumOf(e);
-          if (r) return '<div class="result"><span class="rt">발표 결과 요약</span><div class="rh">□ ' + esc(r.headline) + "</div><ul>" + (r.bullets || []).map(function (x) { return "<li>- " + esc(x) + "</li>"; }).join("") + "</ul>" + (r.source ? '<a class="src" href="' + esc(r.source) + '" target="_blank" rel="noopener">출처 보기</a>' : "") + "</div>";
+          if (r) return '<div class="result"><span class="rt">발표 결과 요약</span><div class="rh">□ ' + esc(r.headline) + "</div><ul>" + (r.bullets || []).map(function (x) { return "<li>- " + esc(x) + "</li>"; }).join("") + "</ul>" + (r.source ? '<span class="src">출처: ' + esc(r.source) + "</span>" : "") + "</div>";
           return e.date < todayKST().k ? '<div class="pending">발표 결과 요약을 준비 중이에요.</div>' : '<div class="pending">발표 후 다음 날 아침에 결과 요약이 올라와요.</div>';
         })() : "") +
         (!ind && e.link ? '<a class="cta" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + esc(e.linkLabel || "바로 신청하러 가기") + "</a>" : "") +
